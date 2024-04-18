@@ -12,7 +12,7 @@ import { createIssueSchema } from "@/app/validationSchema";
 import { z } from "zod";
 import { BiMessageError } from "react-icons/bi";
 import ErrorMessage from "@/app/components/ErrorMessage";
-import Spinner from "@/app/components/spinner";
+import Spinner from "@/app/components/Spinner";
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 
@@ -28,6 +28,17 @@ const NewIssuePage = () => {
 	const router = useRouter();
 	const [error, setError] = useState("");
 	const [isSubmiting, setSubmiting] = useState(false);
+	const onSubmit = handleSubmit(async (data) => {
+		try {
+			setSubmiting(true);
+			await axios.post("/api/issues", data);
+			router.push("/issues");
+		} catch (error) {
+			// console.log(error);
+			setSubmiting(false);
+			setError("An unexpected error has occurred");
+		}
+	});
 
 	return (
 		<div className="max-w-xl">
@@ -39,20 +50,7 @@ const NewIssuePage = () => {
 					<Callout.Text>{error}</Callout.Text>
 				</Callout.Root>
 			)}{" "}
-			<form
-				className="space-y-3"
-				onSubmit={handleSubmit(async (data) => {
-					try {
-						setSubmiting(true);
-						await axios.post("/api/issues", data);
-						router.push("/issues");
-					} catch (error) {
-						// console.log(error);
-						setSubmiting(false);
-						setError("An unexpected error has occurred");
-					}
-				})}
-			>
+			<form className="space-y-3" onSubmit={onSubmit}>
 				<TextField.Root placeholder="Title" {...register("title")} />
 				<ErrorMessage>{errors.title?.message}</ErrorMessage>
 				<Controller

@@ -12,6 +12,7 @@ import { createIssueSchema } from "@/app/validationSchema";
 import { z } from "zod";
 import { BiMessageError } from "react-icons/bi";
 import ErrorMessage from "@/app/components/ErrorMessage";
+import Spinner from "@/app/components/spinner";
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 
@@ -26,6 +27,7 @@ const NewIssuePage = () => {
 	});
 	const router = useRouter();
 	const [error, setError] = useState("");
+	const [isSubmiting, setSubmiting] = useState(false);
 
 	return (
 		<div className="max-w-xl">
@@ -41,10 +43,12 @@ const NewIssuePage = () => {
 				className="space-y-3"
 				onSubmit={handleSubmit(async (data) => {
 					try {
+						setSubmiting(true);
 						await axios.post("/api/issues", data);
 						router.push("/issues");
 					} catch (error) {
 						// console.log(error);
+						setSubmiting(false);
 						setError("An unexpected error has occurred");
 					}
 				})}
@@ -60,7 +64,9 @@ const NewIssuePage = () => {
 				/>
 				<ErrorMessage>{errors.description?.message}</ErrorMessage>
 
-				<Button>Submit New Issue</Button>
+				<Button disabled={isSubmiting}>
+					Submit New Issue {isSubmiting && <Spinner />}
+				</Button>
 			</form>
 		</div>
 	);

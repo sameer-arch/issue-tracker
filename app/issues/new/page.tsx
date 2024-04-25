@@ -13,10 +13,12 @@ import { z } from "zod";
 import { BiMessageError } from "react-icons/bi";
 import ErrorMessage from "@/app/components/ErrorMessage";
 import Spinner from "@/app/components/Spinner";
+import delay from "delay";
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 
-const NewIssuePage = () => {
+const NewIssuePage = async () => {
+	await delay(2000);
 	const {
 		register,
 		control,
@@ -39,7 +41,6 @@ const NewIssuePage = () => {
 			setError("An unexpected error has occurred");
 		}
 	});
-
 	return (
 		<div className="max-w-xl">
 			{error && (

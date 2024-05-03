@@ -11,9 +11,6 @@ const statusMap: Record<
 	IN_PROGRESS: { label: "IN_PROGRESS", color: "violet" },
 };
 
-interface Props {
-	status: Status;
-}
 const IssueStatusBadge = ({ status }: { status: Status }) => {
 	return (
 		<Badge color={statusMap[status].color}>{statusMap[status].label}</Badge>

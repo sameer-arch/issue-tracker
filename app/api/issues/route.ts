@@ -1,10 +1,10 @@
 import prisma from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { createIssueSchema } from "../../validationSchema";
+import { IssueSchema } from "../../validationSchema";
 
 export async function POST(requrst: NextRequest) {
 	const body = await requrst.json();
-	const validation = createIssueSchema.safeParse(body);
+	const validation = IssueSchema.safeParse(body);
 
 	if (!validation.success)
 		return NextResponse.json(validation.error.format(), { status: 400 });

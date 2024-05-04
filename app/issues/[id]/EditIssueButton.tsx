@@ -7,7 +7,7 @@ const EditIssueButton = ({ issueId }: { issueId: number }) => {
 	return (
 		<Button>
 			<RxPencil2 />
-			<Link href={`/issue/${issueId}/edit`}>Edit Issue</Link>
+			<Link href={`/issues/${issueId}/edit`}>Edit Issue</Link>
 		</Button>
 	);
 };

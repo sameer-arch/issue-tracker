@@ -6,10 +6,12 @@ import { Select } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+
 const AssigneeSelect = ({ issue }: { issue: Issue }) => {
 	const { data: users, error, isLoading } = useUsers();
 
 	if (isLoading) return <Skeleton />;
+
 	if (error) return null;
 
 	const assignIssue = (userId: string) => {
@@ -28,7 +30,7 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
 				defaultValue={issue.assignedToUserId || ""}
 				onValueChange={assignIssue}
 			>
-				<Select.Trigger aria-placeholder="Assign..." />
+				<Select.Trigger placeholder="Assign..." />
 				<Select.Content>
 					<Select.Group>
 						<Select.Label>Suggestions</Select.Label>
@@ -53,4 +55,5 @@ const useUsers = () =>
 		staleTime: 60 * 1000, //60s
 		retry: 3,
 	});
+
 export default AssigneeSelect;

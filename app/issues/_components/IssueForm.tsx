@@ -1,22 +1,23 @@
 "use client";
-import { Button, Callout, TextField } from "@radix-ui/themes";
-// import SimpleMDE from "react-simplemde-editor";
+
 import ErrorMessage from "@/app/components/ErrorMessage";
 import Spinner from "@/app/components/Spinner";
 import { IssueSchema } from "@/app/validationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Issue } from "@prisma/client";
+import { Button, Callout, TextField } from "@radix-ui/themes";
 import axios from "axios";
 import "easymde/dist/easymde.min.css";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { RxInfoCircled } from "react-icons/rx";
 import SimpleMDE from "react-simplemde-editor";
 import { z } from "zod";
+
 type IssueFormData = z.infer<typeof IssueSchema>;
 
 const IssueForm = ({ issue }: { issue?: Issue }) => {
+	const router = useRouter();
 	const {
 		register,
 		control,
@@ -25,38 +26,37 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
 	} = useForm<IssueFormData>({
 		resolver: zodResolver(IssueSchema),
 	});
-	const router = useRouter();
 	const [error, setError] = useState("");
-	const [isSubmiting, setSubmiting] = useState(false);
+	const [isSubmitting, setSubmitting] = useState(false);
+
 	const onSubmit = handleSubmit(async (data) => {
 		try {
-			setSubmiting(true);
+			setSubmitting(true);
 			if (issue) await axios.patch("/api/issues/" + issue.id, data);
 			else await axios.post("/api/issues", data);
 			router.push("/issues/list");
 			router.refresh();
-			// console.log(isSubmiting);
 		} catch (error) {
-			setSubmiting(false);
-			setError("An unexpected error has occurred");
+			setSubmitting(false);
+			setError("An unexpected error occurred.");
 		}
 	});
+
 	return (
 		<div className="max-w-xl">
 			{error && (
 				<Callout.Root color="red" className="mb-5">
-					<Callout.Icon>
-						<RxInfoCircled />
-					</Callout.Icon>
 					<Callout.Text>{error}</Callout.Text>
 				</Callout.Root>
-			)}{" "}
+			)}
 			<form className="space-y-3" onSubmit={onSubmit}>
-				<TextField.Root
-					defaultValue={issue?.title}
-					placeholder="Title"
-					{...register("title")}
-				/>
+				<TextField.Root>
+					<TextField.Input
+						defaultValue={issue?.title}
+						placeholder="Title"
+						{...register("title")}
+					/>
+				</TextField.Root>
 				<ErrorMessage>{errors.title?.message}</ErrorMessage>
 				<Controller
 					name="description"
@@ -67,10 +67,9 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
 					)}
 				/>
 				<ErrorMessage>{errors.description?.message}</ErrorMessage>
-
-				<Button disabled={isSubmiting}>
-					{issue ? "update issue" : "Submit New Issue"}{" "}
-					{isSubmiting && <Spinner />}
+				<Button disabled={isSubmitting}>
+					{issue ? "Update Issue" : "Submit New Issue"}{" "}
+					{isSubmitting && <Spinner />}
 				</Button>
 			</form>
 		</div>
